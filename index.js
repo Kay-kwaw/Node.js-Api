@@ -9,7 +9,7 @@ const cors = require('cors');
 //Lodash makes JavaScript easier by taking the hassle out of working with arrays, numbers, objects, strings,
 const _ = require('lodash');
 //To generate a unique identifier for posts
-const {v4:uuid}= require('uuid');
+const { v4: uuid }= require('uuid');
 //sETTING API 
 const app = express();
 //A mdiddleware function to support JSON 
@@ -30,6 +30,24 @@ app.get("/outfit", (req, res) => {
 });
 //Defining a get enndpoint for the comments section
 //What this function does is basically does is to grab the id and return the comment
+
+app.get("/comments/:id", async (req, res) => {
+    const id = req.params.id;
+    let content; 
+
+    try{
+        content = await fs.readFile(`data/comments/${id}.txt`, 'utf-8');
+    }catch(err){
+        return res.sendStatus(404);
+    }
+
+    res.json({
+        content:content
+    });
+});
+
+
+
 app.post('/comments',async (req, res) => {
     const id = uuid(); 
     const content = req.body.content;
@@ -46,7 +64,7 @@ app.post('/comments',async (req, res) => {
 
 
 });
-
+ 
 
 
 app.listen(3000, () =>{
