@@ -10,11 +10,45 @@ const cors = require('cors');
 const _ = require('lodash');
 //To generate a unique identifier for posts
 const {v4:uuid}= require('uuid');
-
-
 //sETTING API 
 const app = express();
+//A mdiddleware function to support JSON 
+
+app.use(express.json());
+
+
+app.get("/outfit", (req, res) => {
+    const weekdays = ["monday", "tuesday","wednesday", "thursday", "friday", "saturday", "sunday"]
+    const cars = ["poche","benz 300","corolla","Range rover","camry","accent","Land rover","opel"]
+    const wears = ["whites","blue","green","black","yellow","purple","indingo","purple"]
+    
+    res.json({
+        weekdays: _.sample(weekdays),
+        cars: _.sample(cars),
+        wears: _.sample(wears)
+    })
+});
+//Defining a get enndpoint for the comments section
+//What this function does is basically does is to grab the id and return the comment
+app.post('/comments',async (req, res) => {
+    const id = uuid(); 
+    const content = req.body.content;
+    if (!content) {
+        return res.status(400);
+    }
+    await fs.mkdir("data/comments", {recursive: true});
+    await fs.writeFile(`data/comments/${id}.txt`, content);
+
+    res.status(201).json({
+        id: id,
+        
+    })
+
+
+});
+
+
 
 app.listen(3000, () =>{
-    console.log('Server is running on port 3000');
+    console.log('API Server is running on port 3000');
 });
